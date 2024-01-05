@@ -4,7 +4,7 @@ import { pokemonTypesColors, themeColors } from "../../js/objects"
 const StyledCard = styled.div`
     
     
-    width: ${props => props.size === "mini" ? "180px" : "300px"}; 
+    width: ${props => props.size === "mini" ? "180px" : "300px"};
     height: ${props => props.size === "mini" ? "250px" : "400px"};
     gap: 100px;
     font-size: ${props => props.size === "mini" ? "12px" : "18px"};

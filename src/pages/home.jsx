@@ -32,4 +32,4 @@ const Home = () => {
     )
 }
 
-export { Home }
+export { Home } 

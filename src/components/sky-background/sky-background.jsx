@@ -12,7 +12,7 @@ const SkyBackground = () => {
     switch (theme.state) {
         case "dark" : {
             return(
-                <NightSkyContainer>
+                <NightSkyContainer data-testid="dark-mode">
                     <StarsContainer>
                         <Stars/>
                         <Moon />
@@ -24,12 +24,13 @@ const SkyBackground = () => {
 
         case "light" : {
             return(
-                <DaySkyContainer>
-                    <Sun />
+                <DaySkyContainer data-testid="light-mode"> 
+                    <Sun /> 
                     <Clouds />
                 </DaySkyContainer>
             )
-        }
+            break
+        }   
     }    
 }
 

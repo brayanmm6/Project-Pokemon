@@ -14,5 +14,4 @@ const AppRoutes = () => {
     )
 }
 
-
 export { AppRoutes }

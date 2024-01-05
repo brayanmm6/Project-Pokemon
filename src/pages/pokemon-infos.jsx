@@ -15,7 +15,7 @@ const PokemonInfosPage = () => {
             <Menu theme={theme.state}>
                 { loading && <Loading /> }
             </Menu>
-            <PokemonInfosRender theme={theme.state}/>
+            <PokemonInfosRender theme={theme.state} />  
         </>   
     )
 }

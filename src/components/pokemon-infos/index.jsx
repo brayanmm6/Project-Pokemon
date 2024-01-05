@@ -25,7 +25,7 @@ const PokemonInfosRender = (props) => {
     const { setInfos, cardSize, setCardSize } = useContext(CardsContext)
     const { setSearch } = useContext(SearchContext)
     const { setLimit } = useContext(ListLimitContext)
-    const { error, setError } = useContext(ErrorContext)
+    const { error } = useContext(ErrorContext)
 
     const [currentPokemon, setCurrentPokemon] = useState({
         data: [],
@@ -42,7 +42,6 @@ const PokemonInfosRender = (props) => {
     const { id } = useParams()
 
     async function fetchData() {
-        
         const pokemon = await pokemonSearch(id)
         setCurrentPokemon({ data: await pokemon })
         setPokemonAbilities(await pokemon, setAbilities)
@@ -52,35 +51,42 @@ const PokemonInfosRender = (props) => {
     useEffect(() => {
         fetchData()
         setCardSize({ size: "mini" })
-        setSearch({data: "default"})
+        setSearch({ data: "default" })
     }, [id])
 
-    if (currentPokemon.data.name)  {
-        return (
-            <>
-                { error.state && <WarningMessage /> }
-                <Main theme={props.theme}>
-                    <MainSection>
-                        <SectionPokemonInfos>
-                            <Infos>
+    return (
+        <>
+            {error.state && <WarningMessage />}
+            <Main theme={props.theme} >
+                <MainSection>
+                    <SectionPokemonInfos >
+                        <Infos data-testid="pokemon">
+                            {
+                                currentPokemon.data.name &&
                                 <SectionMainInfos theme={props.theme}>
                                     <h2 className="pokemon-name">{currentPokemon.data.name}</h2>
-                                    <img className="pokemon-image" src={currentPokemon.data.sprites.other["official-artwork"].front_default} alt={currentPokemon.data.name} />
+                                    <img className="pokemon-image" src={currentPokemon.data.sprites.other["official-artwork"].front_default ?? currentPokemon.data.sprites.front_default}   alt={currentPokemon.data.name} />
                                 </SectionMainInfos>
-                                <SectionMoreInfos theme={props.theme}>
-                                    <p className="pokemon-id">ID: #{currentPokemon.data.id}</p>
-                                    <div className="pokemon-type">
-                                        {currentPokemon.data.types.map((pokemonType, index) => {
+                            }
+                            <SectionMoreInfos theme={props.theme} >
+                                <p className="pokemon-id">ID: #{currentPokemon.data.id}</p>
+                                <div className="pokemon-type">
+                                    {
+                                        currentPokemon.data.types && 
+                                        currentPokemon.data.types.map((pokemonType, index) => {
                                             let type = pokemonType.type.name
                                             return (
                                                 <Button key={index} value={type} onClick={() => setFilter({ filter: type }, setInfos({ data: [] }), setLimit({ value: listDefaultValue }), setSearch({ data: "default" }))}>
                                                     <SytyledPokemonType type={type}>{type}</SytyledPokemonType>
                                                 </Button>
-                                            )
-                                        })}
-                                    </div>
-                                    <PokemonStats>
-                                        {currentPokemon.data.stats.map((stat, index) => {
+                                            ) 
+                                        }) 
+                                    }
+                                </div>
+                                <PokemonStats>
+                                    {
+                                        currentPokemon.data.stats &&
+                                        currentPokemon.data.stats.map((stat, index) => {
                                             return (
                                                 <li key={index}>
                                                     <label htmlFor="stat">{stat.stat.name}</label>
@@ -90,65 +96,66 @@ const PokemonInfosRender = (props) => {
                                                     </div>
                                                 </li>
                                             )
-                                        })}
-                                    </PokemonStats>
-                                    <div className="basic-infos">
-                                        <p className="base-xp">Base xp: {currentPokemon.data.base_experience}</p>
-                                        <p className="height">Height: {currentPokemon.data.height}</p>
-                                        <p className="weight">weight: {currentPokemon.data.weight}</p>
-                                    </div>
-                                </SectionMoreInfos>
-                            </Infos>
-                            
-                            <AsideCards theme={props.theme}>
-                                <CardsRender size={cardSize.size} />
-                                <ShowMoreButton />
-                            </AsideCards>
-                        </SectionPokemonInfos>
-                        <Abilities theme={props.theme} >
-                            <TitleHeader>
-                                <h2>Habilities:</h2>
-                            </TitleHeader>
-                            {abilities.data.map((ability, index) => {
-                                return (
-                                    <li key={index} >
-                                        <h2> {ability.name} </h2>
-                                        {ability.effect_entries.map(effect => {
-                                            return (effect.language.name === "en" && <p key={index}>{effect.effect}</p>)
-                                        })}
-                                    </li>
-                                )
-                            })}
-                        </Abilities>
-                    </MainSection>
+                                        })
+                                    }
+                                </PokemonStats>
+                                <div className="basic-infos">
+                                    <p className="base-xp">Base xp: {currentPokemon.data.base_experience}</p>
+                                    <p className="height">Height: {currentPokemon.data.height}</p>
+                                    <p className="weight">weight: {currentPokemon.data.weight}</p>
+                                </div>
+                            </SectionMoreInfos>
+                        </Infos>
 
-                    <PokemonMovesContainer theme={props.theme}>
-                        <TitleHeader className="title">
-                            <h2>Move List: </h2>
+                        <AsideCards theme={props.theme}>
+                            <CardsRender size={cardSize.size} />
+                            <ShowMoreButton />
+                        </AsideCards>
+                    </SectionPokemonInfos>
+                    <Abilities theme={props.theme} >
+                        <TitleHeader>
+                            <h2>Habilities:</h2>
                         </TitleHeader>
-                        <ul>
-                            {moves.data.map((move, index) => {
-                                return (
-                                    <li key={index}>
-                                        <div className="infos">
-                                            <h2 className="name">{move.name ?? "nada"}</h2>
-                                            <span className="power">Power: {move.power ?? "No register."}</span>
-                                        </div>
-                                        {move.effect_entries.map(effect => {
-                                            return (
-                                                <p key={index} className="description">{effect.effect}</p>
-                                            )
-                                        })}
-                                    </li>
-                                )
-                            })}
-                        </ul>
-                    </PokemonMovesContainer>
-                    
-                </Main>
-            </>
-        )
-    }
+                        {abilities.data.map((ability, index) => {
+                            return (
+                                <li key={index} >
+                                    <h2> {ability.name} </h2>
+                                    {ability.effect_entries.map(effect => {
+                                        return (effect.language.name === "en" && <p key={index}>{effect.effect}</p>)
+                                    })}
+                                </li>
+                            )
+                        })}
+                    </Abilities>
+                </MainSection>
+
+                <PokemonMovesContainer theme={props.theme} data-testid="moves">
+                    <TitleHeader className="title">
+                        <h2>Move List: </h2>
+                    </TitleHeader>
+                    <ul>
+                        {moves.data.map((move, index) => {
+                            return (
+                                <li key={index}>
+                                    <div className="infos">
+                                        <h2 className="name">{move.name ?? "nada"}</h2>
+                                        <span className="power">Power: {move.power ?? "No register."}</span>
+                                    </div>
+                                    {move.effect_entries.map(effect => {
+                                        return (
+                                            <p key={index} className="description">{effect.effect}</p>
+                                        )
+                                    })}
+                                </li>
+                            )
+                        })}
+                    </ul>
+                </PokemonMovesContainer>
+
+            </Main>
+        </>
+    )
+
 }
 
 export { PokemonInfosRender }

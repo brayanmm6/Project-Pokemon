@@ -20,6 +20,7 @@ const SectionPokemonInfos = styled.section`
 const Infos = styled.div`
     width: 100%;
     display: flex;
+    justify-content: center;
     gap: 10px;
 `
 

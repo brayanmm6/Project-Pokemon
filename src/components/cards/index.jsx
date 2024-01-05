@@ -32,7 +32,6 @@ const CardsRender = (props) => {
     }, [listLimit, pokemonFilter, search.data])
 
     let count = 0
-
     return (
         <CardsContainer size={props.size}>
             {cardInfos.data.map(pokemonInfo => {
